@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="google-site-verification" content="dgsdV3QRGwKhHMQuifrB2IAjeRb7twekAuUrthLf9bA" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index, follow">
+  <title>Đo Góc Y Tế - Medical Angle Measurement</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      min-height:100vh;
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+    .container{
+      max-width:900px;
+      width:100%;
+      background:#fff;
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 8px 32px rgba(33,150,243,.12);
+    }
+    .header{
+      background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+      color:#fff;
+      padding:20px 24px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .header-icon img {
+  height: 60px;   /* bạn có thể tăng giảm tùy ý */
+  width: auto;
+  display: block;
+}
+    .header-text h1{
+      font-size:22px;
+      font-weight:600;
+      margin-bottom:4px;
+    }
+    .header-text p{
+      font-size:13px;
+      opacity:0.92;
+      font-weight:400;
+    }
+    .content{
+      padding:24px;
+    }
+    .section{
+      margin-bottom:20px;
+    }
+    .section-title{
+      font-size:14px;
+      font-weight:600;
+      color:#424242;
+      margin-bottom:12px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    .upload-section{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .button{
+      background:#fff;
+      border:2px solid #2196f3;
+      color:#2196f3;
+      padding:12px 24px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      transition: all 0.2s;
+    }
+    .button:hover{
+      background:#2196f3;
+      color:#fff;
+      transform:translateY(-1px);
+      box-shadow:0 4px 12px rgba(33,150,243,.3);
+    }
+    .button.primary{
+      background:#2196f3;
+      color:#fff;
+    }
+    .button.primary:hover{
+      background:#1976d2;
+    }
+    .button.danger{
+      border-color:#f44336;
+      color:#f44336;
+    }
+    .button.danger:hover{
+      background:#f44336;
+      color:#fff;
+    }
+    .reset-btn{
+      background:#ff9800;
+      border:none;
+      color:#fff;
+      padding:12px 24px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:14px;
+      display:none;
+      transition: all 0.2s;
+    }
+    .reset-btn:hover{
+      background:#f57c00;
+      transform:translateY(-1px);
+      box-shadow:0 4px 12px rgba(255,152,0,.3);
+    }
+    .canvas-wrapper{
+      background:#f5f5f5;
+      border-radius:12px;
+      padding:16px;
+      margin-bottom:16px;
+      display:none;
+    }
+    .canvas-container{
+      width:100%;
+      height:500px;
+      background:#000;
+      border-radius:8px;
+      overflow:hidden;
+      position:relative;
+      cursor:grab;
+      border:3px solid #e0e0e0;
+    }
+    .canvas-container:active{cursor:grabbing}
+    canvas{display:block;width:100%;height:100%}
+    .toolbar{
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid #e0e0e0;
+    }
+    .toolbar button{
+      padding:10px 20px;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+      background:#fff;
+      border:2px solid #9e9e9e;
+      color:#616161;
+      font-weight:600;
+      font-size:13px;
+      transition:all 0.2s;
+    }
+    .toolbar button:hover:not(:disabled){
+      border-color:#2196f3;
+      color:#2196f3;
+      transform:translateY(-1px);
+    }
+    .toolbar button:disabled{
+      opacity:0.4;
+      cursor:not-allowed;
+    }
+    .point-indicator{
+      display:none;
+      text-align:center;
+      padding:12px;
+      background:#e3f2fd;
+      border-left:4px solid #2196f3;
+      border-radius:8px;
+      color:#1565c0;
+      font-weight:600;
+      font-size:14px;
+    }
+    .result-card{
+      display:none;
+      background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+      color:#fff;
+      padding:24px;
+      border-radius:12px;
+      text-align:center;
+      box-shadow:0 4px 20px rgba(76,175,80,.25);
+    }
+    .result-label{
+      font-size:14px;
+      opacity:0.95;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      margin-bottom:8px;
+    }
+    .result-value{
+      font-size:48px;
+      font-weight:700;
+      margin-bottom:4px;
+      text-shadow:0 2px 8px rgba(0,0,0,.15);
+    }
+    .result-subtitle{
+      font-size:13px;
+      opacity:0.9;
+    }
+    .instructions{
+      background:#fff9c4;
+      border-left:4px solid #fbc02d;
+      padding:16px;
+      border-radius:8px;
+      margin-bottom:20px;
+    }
+    .instructions-title{
+      font-size:14px;
+      font-weight:700;
+      color:#f57f17;
+      margin-bottom:10px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .instructions ul{
+      margin-left:20px;
+      color:#5d4037;
+    }
+    .instructions li{
+      margin:6px 0;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .zoom-hint{
+      text-align:center;
+      font-size:12px;
+      color:#757575;
+      margin-top:8px;
+      font-style:italic;
+    }
+    @media (max-width: 768px) {
+      body{padding:12px}
+      .header{padding:16px}
+      .header-icon{font-size:28px}
+      .header-text h1{font-size:18px}
+      .header-text p{font-size:12px}
+      .content{padding:16px}
+      .canvas-container{height:400px}
+      .button{padding:10px 18px;font-size:13px}
+      .result-value{font-size:40px}
+    }
+    @media (max-width: 480px) {
+      .canvas-container{height:350px}
+      .upload-section{flex-direction:column}
+      .button{width:100%;justify-content:center}
+      .toolbar{flex-direction:column}
+      .toolbar button{width:100%}
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- 🧭 Header -->
+  <div class="header">
+    <div class="header-icon">
+          <img src="assets/logo.png" alt="ROMeta Logo">
+    </div>
+    <div class="header-text">
+      <h1 data-i18n="title">ROMeta</h1>
+      <p data-i18n="subtitle">
+        Công cụ hỗ trợ đánh giá biên độ vận động khớp dựa trên hình ảnh chụp tư thế khớp
+      </p>
+    </div>
+
+    <!-- 🌍 Chuyển ngôn ngữ -->
+    <div style="margin-left:auto;">
+      <select id="languageSwitcher">
+        <option value="vi">VI</option>
+        <option value="en">EN</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 📸 Upload -->
+  <div class="content">
+    <div class="section">
+      <div class="section-title" data-i18n="upload_image">📤 Tải Ảnh Lên</div>
+      <div class="upload-section">
+        <input id="cameraInput" type="file" accept="image/*" capture="environment" style="display:none">
+        <input id="imageInput" type="file" accept="image/*" style="display:none">
+
+        <label for="cameraInput" class="button primary">
+          <span>📷</span>
+          <span data-i18n="take_photo">Chụp Ảnh</span>
+        </label>
+        <label for="imageInput" class="button primary">
+          <span>🖼️</span>
+          <span data-i18n="choose_gallery">Chọn Từ Thư Viện</span>
+        </label>
+        <button id="resetBtn" class="reset-btn" data-i18n="choose_image_different">🔄 Chọn Ảnh Khác</button>
+      </div>
+    </div>
+
+    <!-- 📜 Hướng dẫn -->
+    <div class="instructions">
+      <div class="instructions-title">
+        <span>💡</span>
+        <span data-i18n="instruction_title">Hướng Dẫn Sử Dụng</span>
+      </div>
+      <ul>
+        <li data-i18n="instruction_1"><strong>Chọn ảnh:</strong> Chụp mới hoặc tải ảnh từ thư viện</li>
+        <li data-i18n="instruction_2"><strong>Zoom/Pan:</strong> Lăn chuột để phóng to/thu nhỏ, kéo ảnh để di chuyển</li>
+        <li data-i18n="instruction_3"><strong>Đánh dấu điểm:</strong> Nhấp/chạm để đặt 3 điểm (điểm 2 là đỉnh góc)</li>
+        <li data-i18n="instruction_4"><strong>Điều chỉnh:</strong> Kéo thả các điểm để chỉnh vị trí chính xác</li>
+        <li data-i18n="instruction_5"><strong>Kết quả:</strong> Góc sẽ hiển thị tự động sau khi đặt đủ 3 điểm</li>
+      </ul>
+    </div>
+
+    <!-- 🖼️ Canvas đo -->
+    <div class="canvas-wrapper" id="canvasWrapper">
+      <div class="section-title" data-i18n="measurement_area">🔍 Khu Vực Đo Lường</div>
+      <div class="canvas-container" id="canvasContainer">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="zoom-hint" data-i18n="zoom_hint">💡 Lăn chuột để zoom, kéo để di chuyển ảnh</div>
+
+      <div class="toolbar">
+        <button id="undoBtn" data-i18n="undo_point">↶ Xóa Điểm Cuối</button>
+        <button id="clearBtn" data-i18n="clear_points">✕ Xóa Tất Cả Điểm</button>
+      </div>
+    </div>
+
+    <!-- 📍 Số điểm đã đặt -->
+    <div class="point-indicator" id="pointIndicator">
+      📍 <span data-i18n="placed_points">Đã đặt:</span> <span id="pointCount">0</span>/3 <span data-i18n="points">điểm</span>
+    </div>
+
+    <!-- 📐 Kết quả -->
+    <div class="result-card" id="result">
+      <div class="result-label" data-i18n="result_label">Kết Quả Đo Góc</div>
+      <div class="result-value" id="angleValue">0°</div>
+      <div class="result-subtitle" data-i18n="result_subtitle">Angle Measurement Result</div>
+    </div>
+  </div>
+
+  <!-- 🦶 Footer -->
+  <footer style="
+    margin-top: 24px;
+    padding: 16px;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+    width: 100%;
+  ">
+    <p data-i18n="footer">© 2025 ROMeta — Công cụ hỗ trợ đo góc khớp từ ảnh</p>
+    <p data-i18n="footer_dev">Phát triển bởi <strong>Team ROMeta</strong></p>
+  </footer>
+</div>
+
+<!-- 🌍 Script song ngữ -->
+<script>
+const translations = {
+  vi: {
+    title: "ROMeta",
+    subtitle: "Công cụ hỗ trợ đánh giá biên độ vận động khớp dựa trên hình ảnh chụp tư thế khớp",
+    upload_image: "📤 Tải Ảnh Lên",
+    take_photo: "Chụp Ảnh",
+    choose_gallery: "Chọn Từ Thư Viện",
+    choose_image_different: "🔄 Chọn Ảnh Khác",
+    instruction_title: "Hướng Dẫn Sử Dụng",
+    instruction_1: "Chọn ảnh: Chụp mới hoặc tải ảnh từ thư viện",
+    instruction_2: "Zoom/Pan: Lăn chuột để phóng to/thu nhỏ, kéo ảnh để di chuyển",
+    instruction_3: "Đánh dấu điểm: Nhấp/chạm để đặt 3 điểm (điểm 2 là đỉnh góc)",
+    instruction_4: "Điều chỉnh: Kéo thả các điểm để chỉnh vị trí chính xác",
+    instruction_5: "Kết quả: Góc sẽ hiển thị tự động sau khi đặt đủ 3 điểm",
+    measurement_area: "🔍 Khu Vực Đo Lường",
+    zoom_hint: "💡 Lăn chuột để zoom, kéo để di chuyển ảnh",
+    undo_point: "↶ Xóa Điểm Cuối",
+    clear_points: "✕ Xóa Tất Cả Điểm",
+    placed_points: "Đã đặt:",
+    points: "điểm",
+    result_label: "Kết Quả Đo Góc",
+    result_subtitle: "Kết quả đo góc",
+    footer: "© 2025 ROMeta — Công cụ hỗ trợ đo góc khớp từ ảnh",
+    footer_dev: "Phát triển bởi Team ROMeta"
+  },
+  en: {
+    title: "ROMeta",
+    subtitle: "A tool for evaluating joint range of motion based on posture images",
+    upload_image: "📤 Upload Image",
+    take_photo: "Take Photo",
+    choose_gallery: "Choose from Gallery",
+    choose_image_different: "🔄 Choose Another Image",
+    instruction_title: "Instructions",
+    instruction_1: "Select image: Take a new photo or choose from gallery",
+    instruction_2: "Zoom/Pan: Scroll to zoom in/out, drag to move image",
+    instruction_3: "Mark points: Tap/click to place 3 points (point 2 is the vertex)",
+    instruction_4: "Adjust: Drag and drop points to adjust precisely",
+    instruction_5: "Result: The angle will appear automatically after placing 3 points",
+    measurement_area: "🔍 Measurement Area",
+    zoom_hint: "💡 Scroll to zoom, drag to move image",
+    undo_point: "↶ Undo Last Point",
+    clear_points: "✕ Clear All Points",
+    placed_points: "Placed:",
+    points: "points",
+    result_label: "Angle Measurement Result",
+    result_subtitle: "Angle Measurement Result",
+    footer: "© 2025 ROMeta — A tool to measure joint angles from images",
+    footer_dev: "Developed by Team ROMeta"
+  }
+};
+
+const langSelect = document.getElementById('languageSwitcher');
+langSelect.addEventListener('change', (e) => setLanguage(e.target.value));
+
+function setLanguage(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang] && translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+  localStorage.setItem('selectedLang', lang);
+}
+
+// 👉 Tự động chọn ngôn ngữ lưu trước đó
+const savedLang = localStorage.getItem('selectedLang') || 'vi';
+langSelect.value = savedLang;
+setLanguage(savedLang);
+</script>
+
+
+  <script>
+  const cameraInput = document.getElementById('cameraInput');
+  const imageInput = document.getElementById('imageInput');
+  const canvas = document.getElementById('canvas');
+  const canvasContainer = document.getElementById('canvasContainer');
+  const canvasWrapper = document.getElementById('canvasWrapper');
+  const ctx = canvas.getContext('2d');
+  const resetBtn = document.getElementById('resetBtn');
+  const pointIndicator = document.getElementById('pointIndicator');
+  const pointCount = document.getElementById('pointCount');
+  const undoBtn = document.getElementById('undoBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const resultBox = document.getElementById('result');
+  const angleValue = document.getElementById('angleValue');
+
+  let img = null;
+  let points = [];
+  let scale = 1;
+  const zoomStep = 0.12;
+  let offsetX = 0;
+  let offsetY = 0;
+  let draggingPointIndex = -1;
+  let isPanning = false;
+  let pointerDown = false;
+  let pointerMoved = false;
+  let lastPointerX = 0;
+  let lastPointerY = 0;
+  const HIT_RADIUS = 20;
+
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
+
+  function fitCanvasToContainer() {
+    const rect = canvasContainer.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const w = Math.round(rect.width * dpr);
+    const h = Math.round(rect.height * dpr);
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+      ctx.setTransform(1,0,0,1,0,0);
+      drawImage();
+    }
+  }
+
+  function setupCanvasAndTransform() {
+    canvasWrapper.style.display = 'block';
+    fitCanvasToContainer();
+
+    const rect = canvas.getBoundingClientRect();
+    const displayW = rect.width;
+    const displayH = rect.height;
+
+    const scaleX = displayW / img.width;
+    const scaleY = displayH / img.height;
+    scale = Math.min(scaleX, scaleY, 1);
+
+    const targetDisplayW = img.width * scale;
+    const targetDisplayH = img.height * scale;
+
+    const displayOffsetX = (displayW - targetDisplayW) / 2;
+    const displayOffsetY = (displayH - targetDisplayH) / 2;
+
+    const dpr = window.devicePixelRatio || 1;
+    offsetX = displayOffsetX * dpr;
+    offsetY = displayOffsetY * dpr;
+
+    drawImage();
+  }
+
+  function drawImage() {
+    if (!img) {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      return;
+    }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    ctx.save();
+    ctx.setTransform(scale * (window.devicePixelRatio||1), 0, 0, scale * (window.devicePixelRatio||1), offsetX, offsetY);
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(img, 0, 0);
+    ctx.restore();
+
+    ctx.save();
+    const dpr = window.devicePixelRatio || 1;
+    points.forEach((p, i) => {
+      const px = p.x * scale * dpr + offsetX;
+      const py = p.y * scale * dpr + offsetY;
+      const radius = 22;
+      
+      ctx.beginPath();
+      ctx.arc(px, py, radius, 0, Math.PI*2);
+      ctx.fillStyle = (i===1)?'#f44336':'#2196f3';
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#fff';
+      ctx.stroke();
+      
+      ctx.fillStyle = '#fff';
+      ctx.font = `bold ${22}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(i+1), px, py);
+    });
+
+    if (points.length >= 2) {
+      ctx.beginPath();
+      ctx.moveTo(points[0].x*scale*dpr + offsetX, points[0].y*scale*dpr + offsetY);
+      ctx.lineTo(points[1].x*scale*dpr + offsetX, points[1].y*scale*dpr + offsetY);
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+    if (points.length === 3) {
+      ctx.beginPath();
+      ctx.moveTo(points[1].x*scale*dpr + offsetX, points[1].y*scale*dpr + offsetY);
+      ctx.lineTo(points[2].x*scale*dpr + offsetX, points[2].y*scale*dpr + offsetY);
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function getPointerImageCoords(evt) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = evt.clientX;
+    const clientY = evt.clientY;
+    const displayX = clientX - rect.left;
+    const displayY = clientY - rect.top;
+    const dpr = window.devicePixelRatio || 1;
+    const canvasX = displayX * dpr;
+    const canvasY = displayY * dpr;
+    const imgX = (canvasX - offsetX) / (scale * dpr);
+    const imgY = (canvasY - offsetY) / (scale * dpr);
+    return { imgX, imgY, canvasX, canvasY };
+  }
+
+  function hitTestPoint(evt) {
+    if (!points.length) return -1;
+    const { canvasX, canvasY } = getPointerImageCoords(evt);
+    for (let i=0;i<points.length;i++){
+      const p = points[i];
+      const px = p.x * scale * (window.devicePixelRatio||1) + offsetX;
+      const py = p.y * scale * (window.devicePixelRatio||1) + offsetY;
+      const dx = canvasX - px;
+      const dy = canvasY - py;
+      if (Math.hypot(dx,dy) <= HIT_RADIUS) return i;
+    }
+    return -1;
+  }
+
+  function calculateAngle() {
+    if (points.length < 3) return 0;
+    const p1 = points[0], p2 = points[1], p3 = points[2];
+    const a1 = Math.atan2(p1.y - p2.y, p1.x - p2.x);
+    const a2 = Math.atan2(p3.y - p2.y, p3.x - p2.x);
+    let angle = Math.abs(a1 - a2) * (180/Math.PI);
+    if (angle > 180) angle = 360 - angle;
+    return Math.round(angle*10)/10;
+  }
+
+  function updateUI() {
+    pointCount.textContent = String(points.length);
+    undoBtn.disabled = points.length === 0;
+    clearBtn.disabled = points.length === 0;
+    
+    if (points.length === 3) {
+      angleValue.textContent = calculateAngle() + '°';
+      resultBox.style.display = 'block';
+      pointIndicator.style.display = 'none';
+    } else {
+      resultBox.style.display = 'none';
+      pointIndicator.style.display = 'block';
+    }
+  }
+
+  function onImageFileSelected(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { 
+      alert('File không phải ảnh'); 
+      return; 
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const tmp = new Image();
+      tmp.onload = function(){
+        img = tmp;
+        points = [];
+        
+        // Show UI elements
+        canvasWrapper.style.display = 'block';
+        resetBtn.style.display = 'inline-block';
+        pointIndicator.style.display = 'block';
+        resultBox.style.display = 'none';
+        
+        // Setup canvas after container is visible
+        setTimeout(() => {
+          setupCanvasAndTransform();
+          updateUI();
+        }, 50);
+      };
+      tmp.onerror = function(){ 
+        alert('Không thể load ảnh này'); 
+      };
+      tmp.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  canvas.addEventListener('pointerdown', (ev) => {
+    ev.preventDefault();
+    pointerDown = true;
+    pointerMoved = false;
+    lastPointerX = ev.clientX;
+    lastPointerY = ev.clientY;
+
+    const hitIdx = hitTestPoint(ev);
+    if (hitIdx !== -1) {
+      draggingPointIndex = hitIdx;
+      isPanning = false;
+    } else {
+      draggingPointIndex = -1;
+      isPanning = !isMobile
+    }
+    canvas.setPointerCapture(ev.pointerId);
+  });
+
+  canvas.addEventListener('pointermove', (ev) => {
+    const hitIdx = hitTestPoint(ev);
+    if (!pointerDown) {
+      canvas.style.cursor = (hitIdx !== -1) ? 'grab' : 'default';
+    }
+
+    if (!pointerDown) return;
+
+    const moveDist = Math.hypot(ev.clientX - lastPointerX, ev.clientY - lastPointerY);
+    if (moveDist > 2) pointerMoved = true;
+
+    if (draggingPointIndex !== -1) {
+      const { imgX, imgY } = getPointerImageCoords(ev);
+      points[draggingPointIndex].x = Math.max(0, Math.min(img.width, imgX));
+      points[draggingPointIndex].y = Math.max(0, Math.min(img.height, imgY));
+      drawImage();
+      if (points.length === 3) {
+        angleValue.textContent = calculateAngle() + '°';
+        resultBox.style.display = 'block';
+      }
+      lastPointerX = ev.clientX;
+      lastPointerY = ev.clientY;
+      return;
+    }
+
+    if (isPanning && !isMobile) {
+      const dpr = window.devicePixelRatio || 1;
+      offsetX += (ev.clientX - lastPointerX) * dpr;
+      offsetY += (ev.clientY - lastPointerY) * dpr;
+      lastPointerX = ev.clientX;
+      lastPointerY = ev.clientY;
+      drawImage();
+    }
+  });
+
+  canvas.addEventListener('pointerup', (ev) => {
+    pointerDown = false;
+    canvas.releasePointerCapture(ev.pointerId);
+    const hitIdx = hitTestPoint(ev);
+    if (!pointerMoved && hitIdx === -1) {
+      const { imgX, imgY } = getPointerImageCoords(ev);
+      if (points.length < 3) {
+        points.push({ x: Math.max(0, Math.min(img.width, imgX)), y: Math.max(0, Math.min(img.height, imgY)) });
+        updateUI();
+        drawImage();
+      }
+    }
+    draggingPointIndex = -1;
+    isPanning = false;
+  });
+
+  canvas.addEventListener('contextmenu', (e)=> e.preventDefault());
+  
+  canvas.addEventListener('wheel', (ev) => {
+    if (!img) return;
+    if (isMobile) {
+      ev.preventDefault();
+      return;
+    }
+    ev.preventDefault();
+    const { canvasX, canvasY } = getPointerImageCoords(ev);
+    const prevScale = scale;
+    if (ev.deltaY < 0) {
+      scale *= (1 + zoomStep);
+    } else {
+      scale = Math.max(0.05, scale * (1 - zoomStep));
+    }
+    const dpr = window.devicePixelRatio || 1;
+    offsetX = canvasX - (canvasX - offsetX) * (scale/prevScale);
+    offsetY = canvasY - (canvasY - offsetY) * (scale/prevScale);
+    drawImage();
+  }, { passive:false });
+
+  undoBtn.addEventListener('click', ()=>{
+    if (points.length>0) points.pop();
+    updateUI();
+    drawImage();
+  });
+
+  clearBtn.addEventListener('click', ()=>{
+    points = [];
+    updateUI();
+    drawImage();
+  });
+
+  resetBtn.addEventListener('click', ()=>{
+    img = null;
+    points = [];
+    canvasWrapper.style.display = 'none';
+    resetBtn.style.display = 'none';
+    pointIndicator.style.display = 'none';
+    resultBox.style.display = 'none';
+    imageInput.value = '';
+    cameraInput.value = '';
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  });
+
+  window.addEventListener('resize', ()=>{
+    if (!img) return;
+    fitCanvasToContainer();
+    drawImage();
+  });
+
+  imageInput.addEventListener('change', onImageFileSelected);
+  cameraInput.addEventListener('change', onImageFileSelected);
+  </script>
+</body>
+</html>
